@@ -116,6 +116,8 @@ pomodoro* pom = new pomodoro;
 
 
 void MainFrame::OnStartSession(wxCommandEvent& evt) {
+	wxString soundFile = wxT("Audio/MUSICAL.wav");
+	wxSound::Play(soundFile, wxSOUND_ASYNC);
 	button->Hide();
 	buttonStop->Show();
 	buttonPause->Show();

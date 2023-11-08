@@ -20,6 +20,8 @@ private:
     DrawingCanvas* canvasSPT;
     int workDuration;
     int breakDuration;
+    int sessionsCompleted = 0;
+    int totalWorkTime = 0;
     std::condition_variable stopCondition;
     std::mutex stopMutex;
     bool isWorking;

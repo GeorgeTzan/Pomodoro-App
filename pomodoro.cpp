@@ -50,13 +50,9 @@ void pomodoro::startSession(int workminutes, int breakminutes, DrawingCanvas* ca
         
         return;
     }
-    wxSound sound("Audio/MUSICAL.wav", wxSOUND_ASYNC);
-    if (sound.IsOk()) {
-        sound.Play(wxSOUND_ASYNC);
-    }
-    else {
-        wxLogError("Failed to load the sound file.");
-    }
+    wxString soundFile = wxT("Audio/MUSICAL.wav");
+    wxSound::Play(soundFile, wxSOUND_ASYNC);
+
     startButton->Hide();
     stopButton->Hide();
     breakSession(workminutes,breakminutes, canvas, startButton, pauseButton, unpauseButton, users);
@@ -85,8 +81,7 @@ void pomodoro::breakSession(int workminutes, int breakminutes, DrawingCanvas* ca
     
     wxString selectedUser = users->GetValue();
     std::string filePath = "Statistics/" + std::string(selectedUser.mb_str()) + ".txt";
-    int sessionsCompleted = 0;
-    int totalWorkTime = 0;
+    
 
     std::ifstream inFile(filePath);
     if (inFile.is_open()) {
@@ -124,7 +119,7 @@ void pomodoro::breakSession(int workminutes, int breakminutes, DrawingCanvas* ca
         int seconds = remainingSeconds % 60;
 
         wxString message = wxString::Format("%d:%02d", minutes, seconds);
-        canvas->SetText(message, 125, 145);
+        canvas->SetText(message, 163, 195);
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
@@ -138,8 +133,8 @@ void pomodoro::getStatistics(wxComboBox* users) {
     std::string filePath = "Statistics/" + std::string(selectedUser.mb_str()) + ".txt";
 
     
-    int sessionsCompleted = 0;
-    int totalWorkTime = 0;
+    sessionsCompleted = 0;
+    totalWorkTime = 0;
 
     std::ifstream inFile(filePath);
     if (inFile.is_open()) {
