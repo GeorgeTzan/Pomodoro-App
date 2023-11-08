@@ -23,9 +23,9 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 
 
 	//Buttons
-
-	button = new wxButton(panel, wxID_ANY, "Ξεκίνα νεα συνεδρίαση", wxPoint(0, (600 / 2) - 17), wxSize(150, 35));
-	buttonStop = new wxButton(panel, wxID_ANY, "Σταμάτα τη συνεδρίαση", wxPoint(0, (600 / 2) - 17), wxSize(150, 35));
+	catch2B = new wxButton(panel, wxID_ANY, "Catch2", wxPoint(910, 0), wxSize(-1, 32));
+	button = new wxButton(panel, wxID_ANY, "Start a Session!", wxPoint(0, (600 / 2) - 17), wxSize(150, 35));
+	buttonStop = new wxButton(panel, wxID_ANY, "End the session!", wxPoint(0, (600 / 2) - 17), wxSize(150, 35));
 	buttonPause = new wxButton(panel, wxID_ANY, "Pause", wxPoint(0, 329), wxSize(-1, 32));
 	buttonunPause = new wxButton(panel, wxID_ANY, "unPause", wxPoint(0, 329), wxSize(-1, 32));
 	getStatistics = new wxButton(panel, wxID_ANY, "Get current Statistics", wxPoint(10, 46), wxSize(-1, -1));
@@ -34,15 +34,15 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	buttonunPause->Hide();
 
 	buttonStop->Hide();
-	//wxColour backgroundColor(255, 255, 255, 128);
 
 	userBox = new wxComboBox(panel, wxID_ANY, "Load Users", wxPoint(10, 15), wxSize(-1, -1));
-	loadButton = new wxButton(panel, wxID_ANY, "Load", wxPoint(190, 15), wxSize(60, 25));
-	createButton = new wxButton(panel, wxID_ANY, "Create", wxPoint(200, 100), wxSize(100, 30));
+	loadButton = new wxButton(panel, wxID_ANY, "Load", wxPoint(160, 15), wxSize(40, 25));
+	createButton = new wxButton(panel, wxID_ANY, "Create", wxPoint(140, 46), wxSize(-1, -1));
 	Delbutton = new wxButton(panel, wxID_ANY, "Delete", wxPoint(120, 15), wxSize(40, 25));
 	inputSession = new wxSpinCtrl(panel, wxID_ANY, " ", wxPoint(150, 285), wxSize(-1, 32));
 	breakSession = new wxSpinCtrl(panel, wxID_ANY, " ", wxPoint(190, 285), wxSize(-1, 32));
 
+	catch2B->SetForegroundColour(RGB(133, 133, 133));
 	getStatistics->SetForegroundColour(RGB(133, 133, 133));
 	userBox->SetForegroundColour(RGB(133, 133, 133));
 	loadButton->SetForegroundColour(RGB(133, 133, 133));
@@ -55,6 +55,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	buttonStop->SetForegroundColour(RGB(133, 133, 133));
 	button->SetForegroundColour(RGB(133, 133, 133));
 
+	catch2B->SetOwnForegroundColour(RGB(0, 0, 0));
 	button->SetOwnForegroundColour(RGB(0, 0, 0));
 	getStatistics->SetOwnForegroundColour(RGB(0, 0, 0));
 	userBox->SetOwnForegroundColour(RGB(0, 0, 0));
@@ -71,6 +72,8 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	createButton->Bind(wxEVT_BUTTON, &MainFrame::OnCreateTextFile, this);
 	Delbutton->Bind(wxEVT_BUTTON, &MainFrame::onDelButtonClicked, this);
 	buttonStop->Bind(wxEVT_BUTTON, &MainFrame::onEndSession, this);
+	catch2B->Bind(wxEVT_BUTTON, &MainFrame::OnRunTests, this);
+
 	button->Bind(wxEVT_BUTTON, &MainFrame::OnStartSession, this);
 	buttonPause->Bind(wxEVT_BUTTON, &MainFrame::onPaused, this);
 	buttonunPause->Bind(wxEVT_BUTTON, &MainFrame::onUnPaused, this);
@@ -110,16 +113,25 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	canvasIMG->LoadImage("line.bmp");
 
 
+
+
 }
 
 pomodoro* pom = new pomodoro;
 
 
+void MainFrame::OnRunTests(wxCommandEvent& event) {
+	
+	wxString exePath = "Catch2 Tests/Catch.bat";
+	wxExecute(exePath, wxEXEC_ASYNC | wxEXEC_SHOW_CONSOLE, NULL);
+}
+
+
 void MainFrame::OnStartSession(wxCommandEvent& evt) {
 	wxString soundFile = wxT("Audio/MUSICAL.wav");
 	wxSound::Play(soundFile, wxSOUND_ASYNC);
-	button->Hide();
-	buttonStop->Show();
+	button->HideWithEffect(wxSHOW_EFFECT_SLIDE_TO_RIGHT);
+	buttonStop->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_BOTTOM);
 	buttonPause->Show();
 	
 	std::thread timerThread(&pomodoro::startSession, pom, inputSession->GetValue(), breakSession->GetValue(), canvas, canvasSPT, button, buttonStop, buttonPause, buttonunPause, userBox);

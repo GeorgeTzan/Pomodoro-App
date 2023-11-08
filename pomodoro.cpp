@@ -30,12 +30,20 @@ void pomodoro::startSession(int workminutes, int breakminutes, DrawingCanvas* ca
         if (isPaused) {
             continue;
         }
+        wxString message;
+        if (minutes <= 9){
+            message = wxString::Format("0%d:%02d", minutes, seconds);
+            canvas->SetText(message, 163, 195);
 
-        wxString message = wxString::Format("%d:%02d", minutes, seconds);
+        }
+        else {
+            message = wxString::Format("%d:%02d", minutes, seconds);
+        }
         
 
-
         canvas->SetText(message, 163, 195);
+
+        
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
@@ -117,8 +125,14 @@ void pomodoro::breakSession(int workminutes, int breakminutes, DrawingCanvas* ca
     while (isWorking && remainingSeconds >= 0) {
         int minutes = remainingSeconds / 60;
         int seconds = remainingSeconds % 60;
-
-        wxString message = wxString::Format("%d:%02d", minutes, seconds);
+        wxString message;
+        if (minutes <= 9){
+            message = wxString::Format("0%d:%02d", minutes, seconds);
+        }
+        else {
+            message = wxString::Format("%d:%02d", minutes, seconds);
+        }
+        
         canvas->SetText(message, 163, 195);
 
         std::this_thread::sleep_for(std::chrono::seconds(1));

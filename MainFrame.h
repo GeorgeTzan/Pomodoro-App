@@ -12,7 +12,7 @@ public:
 private:
     wxSpinCtrl* inputSession;   
     wxButton* button;
-    
+    wxButton* catch2B;
     wxButton* buttonStop;
     wxButton* text; 
     wxButton* buttonPause;
@@ -24,6 +24,7 @@ private:
     wxString textFromCanvas;
     wxButton* Delbutton;
     wxSpinCtrl* breakSession;  
+    void OnRunTests(wxCommandEvent& evt);
     void onGetStatistics(wxCommandEvent& evt);
     void onDelButtonClicked(wxCommandEvent& evt);
     void onLoadButtonClicked(wxCommandEvent& evt);
