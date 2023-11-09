@@ -12,8 +12,8 @@ Code written by Giorgos Tzanopoulos & Konstandinos Zenullari
 - Track session statistics.
 
 ## Prerequisites
--C++ Compiler 
-<br>-wxWidgets installed
+-C++ Compiler (e.g., GCC)
+<br>-wxWidgets Library installed
 
 ## Installation
 
