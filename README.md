@@ -1,7 +1,9 @@
-Code written by Giorgos Tzanopoulos & Konstandinos Zenullari
-Art designed by Konstandinos Zenullari
-
 ## **Pomodoro University Assignment**
+
+Code written by Giorgos Tzanopoulos & Konstandinos Zenullari
+<br>Art designed by Konstandinos Zenullari
+
+
 
 ## Features
 - Set customizable work sessions and break durations.
@@ -10,8 +12,8 @@ Art designed by Konstandinos Zenullari
 - Track session statistics.
 
 ## Prerequisites
--C++ Compiler
--wxWidgets installed
+-C++ Compiler 
+<br>-wxWidgets installed
 
 ## Installation
 
