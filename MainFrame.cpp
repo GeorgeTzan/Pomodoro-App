@@ -128,30 +128,33 @@ void MainFrame::OnRunTests(wxCommandEvent& event) {
 
 
 void MainFrame::OnStartSession(wxCommandEvent& evt) {
-	wxString soundFile = wxT("Audio/MUSICAL.wav");
+	wxString soundFile = wxT("Audio/ding.wav");
 	wxSound::Play(soundFile, wxSOUND_ASYNC);
-	button->HideWithEffect(wxSHOW_EFFECT_SLIDE_TO_RIGHT);
-	buttonStop->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_BOTTOM);
-	buttonPause->Show();
+	button->HideWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT);
+	buttonStop->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_RIGHT);
+	buttonPause->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_RIGHT);
 	
-	std::thread timerThread(&pomodoro::startSession, pom, inputSession->GetValue(), breakSession->GetValue(), canvas, canvasSPT, button, buttonStop, buttonPause, buttonunPause, userBox);
+	std::thread timerThread(&pomodoro::startSession, pom, inputSession->GetValue(), breakSession->GetValue(),inputSession, breakSession, canvas, canvasSPT, button, buttonStop, buttonPause, buttonunPause, userBox);
 	timerThread.detach();
 }
 void MainFrame::onEndSession(wxCommandEvent& evt) {
 	pom->endSession(); 
-	button->Show();
-	buttonStop->Hide();
-	buttonPause->Hide();
-	buttonunPause->Hide();
+	inputSession->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT); inputSession->Hide();inputSession->Show();
+	breakSession->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT); breakSession->Hide();breakSession->Show();
+	buttonStop->HideWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT);
+	button->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_RIGHT);
+	buttonPause->HideWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT);
+	buttonunPause->HideWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT);
 }
 void MainFrame::onPaused(wxCommandEvent& evt) {
-	buttonPause->Hide();
-	buttonunPause->Show();
+	buttonPause->HideWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT);
+	buttonunPause->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_RIGHT);
 	pom->PauseSession();
 }
 void MainFrame::onUnPaused(wxCommandEvent& evt) {
-	buttonPause->Show();
-	buttonunPause->Hide();
+	buttonunPause->HideWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT);
+	buttonPause->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_RIGHT);
+	
 	pom->unPauseSession();
 }
 void MainFrame::onDelButtonClicked(wxCommandEvent& evt) {
