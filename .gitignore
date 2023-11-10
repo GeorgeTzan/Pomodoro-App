@@ -364,3 +364,4 @@ FodyWeavers.xsd
 *.vcxproj
 /testGUI.vcxproj.filters
 /testGUI.rc
+/README.md

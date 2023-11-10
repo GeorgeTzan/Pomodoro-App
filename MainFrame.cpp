@@ -168,10 +168,12 @@ void MainFrame::onDelButtonClicked(wxCommandEvent& evt) {
 		if (wxFile::Exists(filePath)) {
 			if (wxRemoveFile(filePath)) {
 				wxMessageBox("Profile deleted!", "Success", wxOK | wxICON_INFORMATION);
+				
 			}
 			else {
 				wxMessageBox("Failed to delete the file.", "Error", wxOK | wxICON_ERROR);
 			}
+			userBox->SetSelection(1);
 		}
 		else {
 			wxMessageBox("File not found.", "Error", wxOK | wxICON_ERROR);
@@ -266,7 +268,7 @@ void MainFrame::onGetStatistics(wxCommandEvent& evt) {
 void MainFrame::onLoadButtonClicked(wxCommandEvent& evt)
 {
 	PopulateUserBox();
-	//userBox->SetSelection(2);
+	
 }
 
 
