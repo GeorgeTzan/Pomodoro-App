@@ -4,15 +4,18 @@
 #include <mutex>
 #include <iostream>
 #include "MainFrame.h"
+#include <thread>
 class DrawingCanvas;
 class pomodoro {
 public:
-    void startSession(int workminutes, int breakminutes, wxSpinCtrl* inputSession, wxSpinCtrl* breakInput, DrawingCanvas* canvas, DrawingCanvas* canvasSPT, wxButton* startButton, wxButton* stopButton, wxButton* pauseButton, wxButton* unpauseButton, wxComboBox* users);
+    void startSession(int workminutes, int breakminutes, wxSpinCtrl* inputSession, wxSpinCtrl* breakInput, DrawingCanvas* breakIMG, DrawingCanvas* canvas, DrawingCanvas* canvasSPT, wxButton* startButton, wxButton* stopButton, wxButton* pauseButton, wxButton* unpauseButton, wxComboBox* users);
     void endSession();
-    void breakSession(int workminutes,int breakminutes, wxSpinCtrl* inputSession, wxSpinCtrl* breakInput, DrawingCanvas* canvas, wxButton* startButton, wxButton* pauseButton, wxButton* unPauseButton, wxComboBox* users);
+    void breakSession(int workminutes,int breakminutes, wxSpinCtrl* inputSession, wxSpinCtrl* breakInput, DrawingCanvas* breakIMG, DrawingCanvas* canvas, wxButton* startButton, wxButton* pauseButton, wxButton* unPauseButton, wxComboBox* users);
     void getStatistics(wxComboBox* users);
     void PauseSession();
     void unPauseSession();
+    void pushRight(DrawingCanvas* canvas);
+    void pushLeft(DrawingCanvas* canvas);
     bool isPaused = false;
 
 private:

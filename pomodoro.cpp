@@ -20,7 +20,7 @@ using namespace std::chrono_literals;
 using namespace std;
 wxDECLARE_APP(App);
 
-void pomodoro::startSession(int workminutes, int breakminutes, wxSpinCtrl* inputSession, wxSpinCtrl* breakInput,DrawingCanvas* canvas, DrawingCanvas* canvasSPT, wxButton* startButton, wxButton* stopButton, wxButton* pauseButton, wxButton* unpauseButton, wxComboBox* users) {
+void pomodoro::startSession(int workminutes, int breakminutes, wxSpinCtrl* inputSession, wxSpinCtrl* breakInput, DrawingCanvas* breakIMG,DrawingCanvas* canvas, DrawingCanvas* canvasSPT, wxButton* startButton, wxButton* stopButton, wxButton* pauseButton, wxButton* unpauseButton, wxComboBox* users) {
     int totalSeconds = workminutes * 60;
     int remainingSeconds = totalSeconds;
     
@@ -61,7 +61,7 @@ void pomodoro::startSession(int workminutes, int breakminutes, wxSpinCtrl* input
         
         return;
     }
-    wxString soundFile = wxT("Audio/Ding.wav");
+    wxString soundFile = wxT("Audio/MUSICAL.wav");
     wxSound::Play(soundFile, wxSOUND_ASYNC);
 
     startButton->HideWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT);
@@ -69,7 +69,11 @@ void pomodoro::startSession(int workminutes, int breakminutes, wxSpinCtrl* input
     inputSession->HideWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT); inputSession->Show();inputSession->Hide();
     breakInput->HideWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT); breakInput->Show();breakInput->Hide();
 
-    breakSession(workminutes,breakminutes, inputSession, breakInput,canvas, startButton, pauseButton, unpauseButton, users);
+    std::thread pushTimer([this, breakIMG]() {
+        pushRight(breakIMG);
+        });
+    pushTimer.detach();
+    breakSession(workminutes,breakminutes, inputSession, breakInput,breakIMG,canvas, startButton, pauseButton, unpauseButton, users);
 
 }
 
@@ -91,10 +95,8 @@ void pomodoro::unPauseSession() {
     isPaused = false;
     stopCondition.notify_all();
 }
-void pomodoro::breakSession(int workminutes, int breakminutes, wxSpinCtrl* inputSession, wxSpinCtrl* breakInput, DrawingCanvas* canvas,wxButton* startButton, wxButton* pauseButton, wxButton* unPauseButton, wxComboBox* users) {
-    
+void pomodoro::breakSession(int workminutes, int breakminutes, wxSpinCtrl* inputSession, wxSpinCtrl* breakInput, DrawingCanvas* breakIMG,DrawingCanvas* canvas,wxButton* startButton, wxButton* pauseButton, wxButton* unPauseButton, wxComboBox* users) {
 
-    
     wxString selectedUser = users->GetValue();
     std::string filePath = "Statistics/" + std::string(selectedUser.mb_str()) + ".txt";
     
@@ -147,9 +149,13 @@ void pomodoro::breakSession(int workminutes, int breakminutes, wxSpinCtrl* input
 
         remainingSeconds--;
     }
+    std::thread pushTimerL([this, breakIMG]() {
+        pushLeft(breakIMG);
+        });
+    pushTimerL.detach();
     inputSession->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT); inputSession->Hide();inputSession->Show();
     breakInput->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT); breakInput->Hide();breakInput->Show();
-    startButton->Show();
+    startButton->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT);
 }
 void pomodoro::getStatistics(wxComboBox* users) {
     wxString selectedUser = users->GetValue();
@@ -186,4 +192,23 @@ void pomodoro::getStatistics(wxComboBox* users) {
         totalWorkTime / 3600, (totalWorkTime % 3600) / 60, totalWorkTime % 60);
 
     wxMessageBox(message, "Statistics", wxOK | wxICON_INFORMATION);
+}
+
+void pomodoro::pushRight(DrawingCanvas* canvas) {
+    int i = -300;
+    while (i <= 0) {
+        canvas->SetPosition(wxPoint(i, 250));
+        i++;
+        std::this_thread::sleep_for(std::chrono::microseconds(3));
+
+    }
+}
+void pomodoro::pushLeft(DrawingCanvas* canvas) {
+    int i = 0;
+    while (i >= -300) {
+        canvas->SetPosition(wxPoint(i, 250));
+        i--;
+        std::this_thread::sleep_for(std::chrono::microseconds(1));
+
+    }
 }

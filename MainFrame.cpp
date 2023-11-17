@@ -17,6 +17,7 @@ using namespace std;
 DrawingCanvas* canvas;
 DrawingCanvas* canvasSPT;
 DrawingCanvas* canvasIMG;
+DrawingCanvas* breakIMG;
 MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	wxPanel* panel = new wxPanel(this);
 	panel->SetBackgroundColour(RGB(133,133,133));
@@ -95,10 +96,11 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	canvas = new DrawingCanvas(panel);
 	canvasSPT = new DrawingCanvas(panel);
 	canvasIMG = new DrawingCanvas(panel);
+	breakIMG = new DrawingCanvas(panel);
 
 	canvas->SetSize(wxSize(450, 450));  
 	canvas->SetPosition(wxPoint(438, (1000/2)-450));
-	canvas->LoadImage("tomato.bmp");
+	canvas->LoadImage("Resources/tomato.bmp");
 	canvas->SetText("00:00", 163,195);
 	
 
@@ -108,9 +110,14 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	canvasSPT->SetFont(canvasSPT->GetFont().Scale(2.38f));
 	canvas->SetFont(canvas->GetFont().Scale(5));
 
+	breakIMG->SetSize(wxSize(300, 300));
+	breakIMG->SetPosition(wxPoint(-300, 250));
+
+	breakIMG->LoadImage("Resources/breaktime.bmp");
+
 	canvasIMG->SetSize(wxSize(1,520));
 	canvasIMG->SetPosition(wxPoint(300,25));
-	canvasIMG->LoadImage("line.bmp");
+	canvasIMG->LoadImage("Resources/line.bmp");
 
 
 
@@ -133,8 +140,7 @@ void MainFrame::OnStartSession(wxCommandEvent& evt) {
 	button->HideWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT);
 	buttonStop->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_RIGHT);
 	buttonPause->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_RIGHT);
-	
-	std::thread timerThread(&pomodoro::startSession, pom, inputSession->GetValue(), breakSession->GetValue(),inputSession, breakSession, canvas, canvasSPT, button, buttonStop, buttonPause, buttonunPause, userBox);
+	std::thread timerThread(&pomodoro::startSession, pom, inputSession->GetValue(), breakSession->GetValue(),inputSession, breakSession, breakIMG, canvas, canvasSPT, button, buttonStop, buttonPause, buttonunPause, userBox);
 	timerThread.detach();
 }
 void MainFrame::onEndSession(wxCommandEvent& evt) {
