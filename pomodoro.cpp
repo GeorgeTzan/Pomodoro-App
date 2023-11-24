@@ -12,7 +12,6 @@
 #include <wx/sound.h>
 #include "DrawingCanvas.h"
 #include <chrono>
-
 #include <thread>
 #include <cstdlib>
 #include "MainFrame.h"
@@ -20,20 +19,22 @@ using namespace std::chrono_literals;
 using namespace std;
 wxDECLARE_APP(App);
 
+
+//This is where the pomodoro countdown timer magic happens!
 void pomodoro::startSession(int workminutes, int breakminutes, wxSpinCtrl* inputSession, wxSpinCtrl* breakInput, DrawingCanvas* breakIMG,DrawingCanvas* canvas, DrawingCanvas* canvasSPT, wxButton* startButton, wxButton* stopButton, wxButton* pauseButton, wxButton* unpauseButton, wxComboBox* users) {
     int totalSeconds = workminutes * 60;
     int remainingSeconds = totalSeconds;
     
 
     isWorking = true;
-    
+    wxString message;
     while (isWorking && remainingSeconds >= 0) {
         int minutes = remainingSeconds / 60;
         int seconds = remainingSeconds % 60;
         if (isPaused) {
             continue;
         }
-        wxString message;
+        
         if (minutes <= 9){
             message = wxString::Format("0%d:%02d", minutes, seconds);
             canvas->SetText(message, 163, 195);
@@ -78,6 +79,7 @@ void pomodoro::startSession(int workminutes, int breakminutes, wxSpinCtrl* input
 }
 
 
+//If the end session button is pressed then this code notifies the counter that it should stop
 void pomodoro::endSession() {
     unPauseSession();
     std::unique_lock<std::mutex> lock(stopMutex);
@@ -85,22 +87,28 @@ void pomodoro::endSession() {
     stopCondition.notify_all();
 }
 
+//if paused is pressed it will notify the counter that it should pause
 void pomodoro::PauseSession() {
     std::unique_lock<std::mutex> lock(stopMutex);
     isPaused = true;
     stopCondition.notify_all();
 }
+
+//if unpaused is pressed it will notify the counter that it should unpause
 void pomodoro::unPauseSession() {
     std::unique_lock<std::mutex> lock(stopMutex);
     isPaused = false;
     stopCondition.notify_all();
 }
+
+
+//break time counter
 void pomodoro::breakSession(int workminutes, int breakminutes, wxSpinCtrl* inputSession, wxSpinCtrl* breakInput, DrawingCanvas* breakIMG,DrawingCanvas* canvas,wxButton* startButton, wxButton* pauseButton, wxButton* unPauseButton, wxComboBox* users) {
 
     wxString selectedUser = users->GetValue();
     std::string filePath = "Statistics/" + std::string(selectedUser.mb_str()) + ".txt";
     
-
+    //Scans for existing data in the user's file and replaces them by +1 and by +x amount of time
     std::ifstream inFile(filePath);
     if (inFile.is_open()) {
         std::string line;
@@ -157,6 +165,8 @@ void pomodoro::breakSession(int workminutes, int breakminutes, wxSpinCtrl* input
     breakInput->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT); breakInput->Hide();breakInput->Show();
     startButton->ShowWithEffect(wxSHOW_EFFECT_SLIDE_TO_LEFT);
 }
+
+//This is where the magic happens for the statistics
 void pomodoro::getStatistics(wxComboBox* users) {
     wxString selectedUser = users->GetValue();
 
@@ -165,7 +175,7 @@ void pomodoro::getStatistics(wxComboBox* users) {
     
     sessionsCompleted = 0;
     totalWorkTime = 0;
-
+    // Finds and saves the stats of the user 
     std::ifstream inFile(filePath);
     if (inFile.is_open()) {
         std::string line;
@@ -194,15 +204,19 @@ void pomodoro::getStatistics(wxComboBox* users) {
     wxMessageBox(message, "Statistics", wxOK | wxICON_INFORMATION);
 }
 
+
+//Pseudo-animation right for the IMG that is displayed when is break time
 void pomodoro::pushRight(DrawingCanvas* canvas) {
     int i = -300;
     while (i <= 0) {
         canvas->SetPosition(wxPoint(i, 250));
         i++;
-        std::this_thread::sleep_for(std::chrono::microseconds(3));
+        std::this_thread::sleep_for(std::chrono::microseconds(5));
 
     }
 }
+
+//Pseudo-animation left for the IMG that shouldn't be displayed anymore when break time is over
 void pomodoro::pushLeft(DrawingCanvas* canvas) {
     int i = 0;
     while (i >= -300) {

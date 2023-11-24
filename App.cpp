@@ -8,7 +8,7 @@
 
 wxIMPLEMENT_APP(App);
 
-
+//initializes the window of the gui, setups the ico and locks it in a specific resolution
 bool App::OnInit() {
 	wxInitAllImageHandlers();
 
